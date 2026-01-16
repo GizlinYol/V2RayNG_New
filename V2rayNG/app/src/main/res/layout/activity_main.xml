@@ -64,13 +64,7 @@
                         android:textStyle="bold"
                         android:fontFamily="sans-serif-black" />
 
-                    <!-- Status Indicator Dot -->
-                    <View
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:background="@drawable/bg_main_button"
-                        android:backgroundTint="@color/color_fab_inactive"
-                        android:layout_marginEnd="16dp"/>
+
 
                     <!-- Menu Button (Restored Functionality) -->
                     <ImageView
@@ -117,6 +111,42 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginTop="8dp" />
+
+            <!-- Empty State View (Added) -->
+            <LinearLayout
+                android:id="@+id/empty_state_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone"
+                tools:visibility="gone">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_empty_state_plus"
+                    app:tint="@color/md_theme_secondary"
+                    android:alpha="0.5"/>
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No Servers"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/md_theme_secondary"
+                    android:layout_marginTop="16dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tap + to add a server"
+                    android:textSize="14sp"
+                    android:textColor="@color/md_theme_secondary"
+                    android:layout_marginTop="8dp"
+                    android:alpha="0.7"/>
+            </LinearLayout>
 
             <!-- Connection Test Status Bar (Redesigned) -->
             <LinearLayout

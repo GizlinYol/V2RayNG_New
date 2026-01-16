@@ -174,6 +174,21 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
         mainViewModel.startListenBroadcast()
         mainViewModel.initAssets(assets)
+        
+        // Polish: Empty State Logic
+        mainViewModel.updateListAction.observe(this) {
+             val isEmpty = mainViewModel.serversCache.isEmpty()
+             val emptyView = findViewById<android.view.View>(R.id.empty_state_view)
+             val viewPager = binding.viewPager
+             
+             if (isEmpty) {
+                 emptyView?.visibility = android.view.View.VISIBLE
+                 viewPager.visibility = android.view.View.GONE
+             } else {
+                 emptyView?.visibility = android.view.View.GONE
+                 viewPager.visibility = android.view.View.VISIBLE
+             }
+        }
     }
 
     private fun setupGroupTab() {
