@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:clipToPadding="false">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_card_luxury"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:minHeight="100dp"
+        android:padding="16dp">
+
+        <!-- Selection Indicator Bar (Left side) -->
+        <View
+            android:id="@+id/layout_indicator"
+            android:layout_width="4dp"
+            android:layout_height="0dp"
+            android:background="@color/colorIndicator"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="visible" />
+
+        <!-- Protocol Badge (Top Right) -->
+        <TextView
+            android:id="@+id/tv_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_input_field"
+            android:backgroundTint="@color/md_theme_surfaceVariant"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:text="VMESS"
+            android:textAllCaps="true"
+            android:textColor="@color/md_theme_primary"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Server Name (Main Title) -->
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:text="Server Name"
+            android:textColor="@color/md_theme_onSurface"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tv_type"
+            app:layout_constraintStart_toEndOf="@+id/layout_indicator"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Stats Row (Ping + Traffic) -->
+        <LinearLayout
+            android:id="@+id/stats_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="@+id/tv_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_name">
+
+            <!-- Ping -->
+            <TextView
+                android:id="@+id/tv_test_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_stat_name"
+                android:drawablePadding="4dp"
+                android:drawableTint="@color/colorPing"
+                android:text="120ms"
+                android:textColor="@color/colorPing"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:ignore="UseCompatTextViewDrawableXml" />
+
+            <Space
+                android:layout_width="16dp"
+                android:layout_height="wrap_content"/>
+
+            <!-- Subscription info -->
+            <TextView
+                android:id="@+id/tv_subscription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Premium"
+                android:textColor="@color/md_theme_secondary"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <!-- Action Buttons (Share, Edit, Delete) - Bottom Right -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/stats_container">
+
+            <ImageView
+                android:id="@+id/layout_share"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:padding="6dp"
+                android:src="@drawable/ic_share_24dp"
+                app:tint="@color/md_theme_secondary"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true" />
+
+            <ImageView
+                android:id="@+id/layout_edit"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:padding="6dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_edit_24dp"
+                app:tint="@color/md_theme_secondary"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true" />
+
+            <ImageView
+                android:id="@+id/layout_remove"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:padding="6dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_delete_24dp"
+                app:tint="@color/md_theme_error"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true" />
+
+        </LinearLayout>
+        
+        <!-- Hidden containers to satisfy code bindings (Keeping IDs but making them invisible/wrappers) -->
+         <LinearLayout
+            android:id="@+id/info_container"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+             android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

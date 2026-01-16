@@ -1,0 +1,52 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Luxury Matte Base Theme -->
+    <!-- We use DayNight but our colors are strictly dark/luxury defined in colors.xml -->
+    <style name="AppThemeBase" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Main Colors -->
+        <item name="colorPrimary">@color/md_theme_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_onPrimaryContainer</item>
+
+        <!-- Surfaces -->
+        <item name="colorSurface">@color/md_theme_surface</item>
+        <item name="colorOnSurface">@color/md_theme_onSurface</item>
+        <item name="android:colorBackground">@color/md_theme_background</item>
+        <item name="colorOnBackground">@color/md_theme_onBackground</item>
+
+        <!-- System Bars - Transparent for Immersive Feel -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item> <!-- White icons -->
+        <item name="android:windowLightNavigationBar">false</item>
+        
+        <!-- Ripple Color (Luxurious Blue) -->
+        <item name="colorControlHighlight">@color/md_theme_primaryContainer</item>
+    </style>
+
+    <!-- Default Theme -->
+    <style name="AppThemeDayNight" parent="AppThemeBase">
+        <!-- Additional overrides if needed -->
+    </style>
+
+    <!-- NoActionBar Variant (Used by Manifest) -->
+    <style name="AppThemeDayNight.NoActionBar" parent="AppThemeDayNight">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Translucent Variant -->
+    <style name="AppThemeDayNight.NoActionBar.Translucent" parent="AppThemeDayNight.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <!-- Switch Style (iOS/Luxury Style) -->
+    <style name="BrandedSwitch" parent="Widget.Material3.CompoundButton.Switch">
+        <item name="thumbTint">@color/md_theme_primary</item>
+        <item name="trackTint">@color/md_theme_secondaryContainer</item>
+    </style>
+
+</resources>
