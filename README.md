@@ -33,7 +33,53 @@ Bu depo, orijinal **v2rayNG** projesi temel alınarak oluşturulmuş olup **aray
 - Gradle Wrapper
 
 ---
+Android/data/<package_name>/files/assets
+- Geliştirilmiş veri setleri için:
+- https://github.com/Loyalsoldier/v2ray-rules-dat
+- Resmi listeler manuel olarak içe aktarılabilir:
+- Domain listesi
+- IP listesi
+
+> Not: Harici `.dat` dosyaları da aynı dizin kullanılarak desteklenir.
+
+---
+
+## 🛠️ Geliştirme
+
+Proje, **Android Studio** üzerinden doğrudan derlenebilir.
+
+Ancak uygulama içinde kullanılan **V2Ray/Xray AAR paketleri güncel olmayabilir**.  
+Güncel çekirdek derlemek için aşağıdaki projeler kullanılabilir:
+
+- https://github.com/2dust/AndroidLibV2rayLite
+- https://github.com/2dust/AndroidLibXrayLite
+
+### Faydalı Kaynaklar
+- Go Mobile: https://github.com/golang/go/wiki/Mobile
+- Go Makefile Rehberi: https://tutorialedge.net/golang/makefiles-for-go-developers/
+
+---
+
+## 🧪 Emulator & WSA
+
+Android Emulator üzerinde çalışır.  
+Windows Subsystem for Android (WSA) için VPN izni şu komutla verilmelidir:
+
+```bash
+appops set <package_name> ACTIVATE_VPN allow
+
 
 ## 📂 GeoIP & GeoSite
 
 - `geoip.dat` ve `geosite.dat` dosyaları aşağıdaki dizinde bulunur:
+
+## 📜 Lisans
+⚠️ Sorumluluk Reddi
+
+Bu yazılım eğitim ve araştırma amaçlıdır.
+Kullanım sonucu doğabilecek yasal sorumluluklar tamamen kullanıcıya aittir.
+
+## 🤝 Katkı
+
+Pull request’ler ve geri bildirimler memnuniyetle karşılanır.
+Büyük değişiklikler için lütfen önce bir issue açınız.
