@@ -143,6 +143,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         binding.fab.setOnClickListener { handleFabAction() }
         binding.layoutTest.setOnClickListener { handleLayoutTestClick() }
+        
+        // Custom Menu Button Logic
+        val menuBtn = findViewById<android.widget.ImageView>(R.id.iv_menu)
+        menuBtn?.setOnClickListener { view ->
+            val popup = androidx.appcompat.widget.PopupMenu(this, view)
+            popup.menuInflater.inflate(R.menu.menu_main, popup.menu)
+            popup.setOnMenuItemClickListener { item ->
+                onOptionsItemSelected(item)
+            }
+            popup.show()
+        }
 
         setupGroupTab()
         setupViewModel()

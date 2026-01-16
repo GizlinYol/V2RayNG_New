@@ -58,7 +58,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="V2RayNG"
+                        android:text="V2Ray Elite"
                         android:textColor="@color/md_theme_onSurface"
                         android:textSize="32sp"
                         android:textStyle="bold"
@@ -69,7 +69,19 @@
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:background="@drawable/bg_main_button"
-                        android:backgroundTint="@color/color_fab_inactive" /> 
+                        android:backgroundTint="@color/color_fab_inactive"
+                        android:layout_marginEnd="16dp"/>
+
+                    <!-- Menu Button (Restored Functionality) -->
+                    <ImageView
+                        android:id="@+id/iv_menu"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_settings_24dp"
+                        app:tint="@color/md_theme_onSurface"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true" />
                 </LinearLayout>
 
             </LinearLayout>
