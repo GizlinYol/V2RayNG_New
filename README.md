@@ -1,85 +1,57 @@
-# v2rayNG (Custom Fork)
+V2Ray Elite - High Performance Xray/V2Ray Client for Android
 
-Android için geliştirilmiş, **V2Ray / Xray** çekirdeklerini destekleyen açık kaynaklı bir VPN istemcisidir.  
-Bu depo, orijinal **v2rayNG** projesi temel alınarak oluşturulmuş olup **arayüz, logo ve kullanıcı deneyimi** tarafında özelleştirmeler içeren bir fork’tur.
+V2Ray Elite is a sophisticated, open-source VPN client for Android, built upon the robust foundations of v2rayNG. This fork is specifically engineered to bridge the gap between powerful networking capabilities and a modern, user-centric interface.
 
-> Bu proje, çekirdek protokol mantığını değiştirmeyi değil; görsel tasarım, kullanılabilirlik ve proje yapısını iyileştirmeyi amaçlar.
+While maintaining full compatibility with Xray and V2Ray cores, this version focuses on UI/UX optimization, brand identity integration, and workflow efficiency.
+💎 Key Enhancements
 
----
+    Refined UI/UX: A complete departure from the legacy interface, featuring a streamlined dashboard and intuitive navigation.
 
-## ✨ Özellikler
+    Custom Branding: Fully integrated custom iconography and design language.
 
-- Xray Core ve v2fly Core desteği
-- Modern ve sade kullanıcı arayüzü
-- Özelleştirilmiş logo ve tasarım dili
-- Abonelik (subscription) desteği
-- Manuel sunucu yapılandırması
-- GeoIP & GeoSite kural desteği
-- Açık kaynak ve şeffaf yapı
+    Seamless Subscription Management: Optimized handling of remote configurations and server lists.
 
----
+    Core Versatility: Native support for both Xray-core and v2fly-core.
 
-## 🧩 Desteklenen Çekirdekler
+    Enhanced Routing Control: Simplified management of GeoIP and GeoSite rules for granular traffic steering.
 
-- [Xray Core](https://github.com/XTLS/Xray-core)
-- [v2fly Core](https://github.com/v2fly/v2ray-core)
+🛠 Technical Overview
+Supported Cores
 
----
+    Xray Core: For cutting-edge XTLS and performance features.
 
-## 📱 Gereksinimler
+    v2fly Core: For industry-standard V2Ray stability.
 
-- **Android API 24+**
-- Android Studio (geliştirme için)
-- Gradle Wrapper
+System Requirements
 
----
-Android/data/<package_name>/files/assets
-- Geliştirilmiş veri setleri için:
-- https://github.com/Loyalsoldier/v2ray-rules-dat
-- Resmi listeler manuel olarak içe aktarılabilir:
-- Domain listesi
-- IP listesi
+    Minimum SDK: API 24 (Android 7.0+)
 
-> Not: Harici `.dat` dosyaları da aynı dizin kullanılarak desteklenir.
+    Build System: Gradle Wrapper / Android Studio
 
----
+    Environment: Support for physical devices, Android Emulators, and WSA (Windows Subsystem for Android).
 
-## 🛠️ Geliştirme
+📂 Asset & Rule Management
 
-Proje, **Android Studio** üzerinden doğrudan derlenebilir.
+The application utilizes .dat files for intelligent routing.
 
-Ancak uygulama içinde kullanılan **V2Ray/Xray AAR paketleri güncel olmayabilir**.  
-Güncel çekirdek derlemek için aşağıdaki projeler kullanılabilir:
+    Default Path: Android/data/[PACKAGE_NAME]/files/assets
 
-- https://github.com/2dust/AndroidLibV2rayLite
-- https://github.com/2dust/AndroidLibXrayLite
+    Recommended Rulesets: It is highly recommended to use Loyalsoldier/v2ray-rules-dat for enhanced Geo-filtering.
 
-### Faydalı Kaynaklar
-- Go Mobile: https://github.com/golang/go/wiki/Mobile
-- Go Makefile Rehberi: https://tutorialedge.net/golang/makefiles-for-go-developers/
+    WSA Note: For Windows Subsystem for Android, grant VPN permissions via ADB:
 
----
+    appops set [PACKAGE_NAME] ACTIVATE_VPN allow
 
-## 🧪 Emulator & WSA
+🏗 Development & Core Compilation
 
-Android Emulator üzerinde çalışır.  
-Windows Subsystem for Android (WSA) için VPN izni şu komutla verilmelidir:
+This project can be compiled directly via Android Studio. For developers requiring the absolute latest core binaries (AAR), please refer to:
 
-```bash
-appops set <package_name> ACTIVATE_VPN allow
+    AndroidLibXrayLite
 
+    AndroidLibV2rayLite
 
-## 📂 GeoIP & GeoSite
+⚖️ Legal Disclaimer & Licensing
 
-- `geoip.dat` ve `geosite.dat` dosyaları aşağıdaki dizinde bulunur:
+Disclaimer: This software is provided for educational and research purposes only. Users are solely responsible for compliance with local laws and regulations. The developers assume no liability for misuse.
 
-## 📜 Lisans
-⚠️ Sorumluluk Reddi
-
-Bu yazılım eğitim ve araştırma amaçlıdır.
-Kullanım sonucu doğabilecek yasal sorumluluklar tamamen kullanıcıya aittir.
-
-## 🤝 Katkı
-
-Pull request’ler ve geri bildirimler memnuniyetle karşılanır.
-Büyük değişiklikler için lütfen önce bir issue açınız.
+License: This project is licensed under the GPL-3.0 License - maintaining the open-source spirit of the original v2rayNG project.
