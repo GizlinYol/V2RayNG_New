@@ -10,6 +10,7 @@
     android:paddingBottom="8dp"
     android:clipToPadding="false">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/item_bg"
         android:layout_width="match_parent"
@@ -20,6 +21,41 @@
         android:foreground="?attr/selectableItemBackground"
         android:minHeight="100dp"
         android:padding="16dp">
+
+        <!-- Hidden or Aliased Views for Code Compatibility -->
+        <LinearLayout
+            android:id="@+id/info_container"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/tv_statistics"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <LinearLayout
+            android:id="@+id/layout_subscription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <LinearLayout
+            android:id="@+id/layout_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <!-- Selection Indicator Bar (Left side) -->
         <View
@@ -152,16 +188,7 @@
                 android:clickable="true" />
 
         </LinearLayout>
-        
-        <!-- Hidden containers to satisfy code bindings (Keeping IDs but making them invisible/wrappers) -->
-         <LinearLayout
-            android:id="@+id/info_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
-             android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
