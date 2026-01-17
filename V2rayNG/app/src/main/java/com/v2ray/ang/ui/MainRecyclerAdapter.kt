@@ -135,7 +135,7 @@ class MainRecyclerAdapter(val activity: MainActivity) : RecyclerView.Adapter<Mai
                 }
             }
 
-            holder.itemMainBinding.infoContainer.setOnClickListener {
+            holder.itemMainBinding.itemBg.setOnClickListener {
                 setSelectServer(guid)
             }
         }
@@ -322,16 +322,21 @@ class MainRecyclerAdapter(val activity: MainActivity) : RecyclerView.Adapter<Mai
      * @param guid The server unique identifier to select
      */
     private fun setSelectServer(guid: String) {
-        val selected = MmkvManager.getSelectServer()
-        if (guid != selected) {
-            MmkvManager.setSelectServer(guid)
-            if (!TextUtils.isEmpty(selected)) {
-                notifyItemChanged(mActivity.mainViewModel.getPosition(selected.orEmpty()))
-            }
-            notifyItemChanged(mActivity.mainViewModel.getPosition(guid))
-            if (isRunning) {
-                mActivity.restartV2Ray()
-            }
+        val lastSelected = MmkvManager.getSelectServer()
+        if (guid != lastSelected) {
+             MmkvManager.setSelectServer(guid)
+             // Refresh the previously selected item to remove the active indicator
+             if (!TextUtils.isEmpty(lastSelected)) {
+                 val lastIndex = mActivity.mainViewModel.getPosition(lastSelected.orEmpty())
+                 if (lastIndex >= 0) notifyItemChanged(lastIndex)
+             }
+             // Refresh the newly selected item to submit the active indicator
+             val newIndex = mActivity.mainViewModel.getPosition(guid)
+             if (newIndex >= 0) notifyItemChanged(newIndex)
+             
+             if (isRunning) {
+                 mActivity.restartV2Ray()
+             }
         }
     }
 

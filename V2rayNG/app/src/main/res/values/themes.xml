@@ -30,8 +30,9 @@
         <item name="android:textColorSecondary">@color/md_theme_secondary</item>
         <item name="android:editTextColor">@color/md_theme_onSurface</item>
         
-        <!-- Dark Dialogs -->
+        <!-- Dark Dialogs and Popups -->
         <item name="android:alertDialogTheme">@style/LuxuryAlertDialog</item>
+        <item name="android:popupMenuStyle">@style/LuxuryPopupMenu</item>
     </style>
 
     <style name="LuxuryAlertDialog" parent="Theme.Material3.DayNight.Dialog.Alert">
@@ -39,6 +40,11 @@
         <item name="colorSurface">@color/md_theme_surfaceVariant</item>
         <item name="android:textColor">@color/md_theme_onSurface</item>
         <item name="android:textColorPrimary">@color/md_theme_onSurface</item>
+    </style>
+
+    <style name="LuxuryPopupMenu" parent="Widget.Material3.PopupMenu">
+        <item name="android:popupBackground">@color/md_theme_surfaceVariant</item>
+        <item name="android:textColor">@color/md_theme_onSurface</item>
     </style>
 
     <!-- Default Theme -->
