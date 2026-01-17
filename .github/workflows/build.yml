@@ -73,7 +73,9 @@ jobs:
 
     - name: Build libv2ray
       run: |
+        mkdir -p V2rayNG/app/libs
         gomobile bind -target=android -androidapi 21 -ldflags="-s -w" -v -o V2rayNG/app/libs/libv2ray.aar ./AndroidLibXrayLite
+        ls -R V2rayNG/app/libs/
 
     - name: Setup Java
       uses: actions/setup-java@v4.7.0
