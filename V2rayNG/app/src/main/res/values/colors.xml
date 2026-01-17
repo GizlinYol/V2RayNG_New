@@ -12,51 +12,45 @@
     <color name="divider_color_light">#252525</color> <!-- Subtle Divider -->
     <color name="colorIndicator">@color/md_theme_primary</color>
 
-    <!-- Luxury Matte Theme Keys (Material 3 Mapping) -->
-    
-    <!-- Primary: Golden Orange for key actions/accents -->
-    <color name="md_theme_primary">#F97910</color>
+    <!-- Brand Colors -->
+    <color name="md_theme_primary">#F97910</color> <!-- Golden Orange -->
     <color name="md_theme_onPrimary">#FFFFFF</color>
-    <color name="md_theme_primaryContainer">#1C1C1E</color>
+    <color name="md_theme_primaryContainer">#2C2C2E</color> <!-- Dark Grey Surface -->
     <color name="md_theme_onPrimaryContainer">#F97910</color>
-
-    <!-- Secondary: Subtle Gray/Zinc for secondary elements -->
-    <color name="md_theme_secondary">#8E8E93</color>
-    <color name="md_theme_onSecondary">#FFFFFF</color>
-    <color name="md_theme_secondaryContainer">#2C2C2E</color>
-    <color name="md_theme_onSecondaryContainer">#E5E5EA</color>
-
-    <!-- Tertiary: Keeping a muted teal just in case, but darker -->
-    <color name="md_theme_tertiary">#30D158</color>
-    <color name="md_theme_onTertiary">#000000</color>
-    <color name="md_theme_tertiaryContainer">#003310</color>
-    <color name="md_theme_onTertiaryContainer">#A0F2D0</color>
-
-    <!-- Error -->
+    
+    <color name="md_theme_secondary">#D1D1D6</color> <!-- Light Grey Text -->
+    <color name="md_theme_onSecondary">#121212</color>
+    <color name="md_theme_secondaryContainer">#1C1C1E</color> <!-- Slightly lighter black -->
+    <color name="md_theme_onSecondaryContainer">#D1D1D6</color>
+    
+    <color name="md_theme_tertiary">#FF9F0A</color>
+    <color name="md_theme_onTertiary">#FFFFFF</color>
+    <color name="md_theme_tertiaryContainer">#3A3A3C</color>
+    <color name="md_theme_onTertiaryContainer">#FFD60A</color>
+    
     <color name="md_theme_error">#FF453A</color>
+    <color name="md_theme_onError">#FFFFFF</color>
     <color name="md_theme_errorContainer">#93000A</color>
-    <color name="md_theme_onError">#690005</color>
     <color name="md_theme_onErrorContainer">#FFDAD6</color>
-
-    <!-- Backgrounds: Deep Matte Black -->
-    <color name="md_theme_background">#050505</color> 
-    <color name="md_theme_onBackground">#F2F2F7</color>
-
-    <!-- Surfaces: Charcoal (Slightly lighter than bg) -->
-    <color name="md_theme_surface">#121212</color> 
+    
+    <color name="md_theme_background">#000000</color> <!-- OLED Black -->
+    <color name="md_theme_onBackground">#FFFFFF</color>
+    <color name="md_theme_surface">#121212</color> <!-- Very Dark Grey -->
     <color name="md_theme_onSurface">#FFFFFF</color>
-    <color name="md_theme_surfaceVariant">#1C1C1E</color>
-    <color name="md_theme_onSurfaceVariant">#d1d1d6</color>
-    <color name="md_theme_inverseSurface">#E6E1E5</color>
-    <color name="md_theme_inverseOnSurface">#313033</color>
-
-    <!-- Outlines: Very subtle for "Matte" look -->
-    <color name="md_theme_outline">#2C2C2E</color>
-    <color name="md_theme_outlineVariant">#48484A</color>
-
-    <!-- High End Finishes -->
-    <color name="md_theme_inversePrimary">#F97910</color>
-    <color name="md_theme_shadow">#000000</color>
+    <color name="md_theme_surfaceVariant">#1C1C1E</color> <!-- Card Background -->
+    <color name="md_theme_onSurfaceVariant">#E5E5EA</color>
+    
+    <color name="md_theme_outline">#3A3A3C</color>
+    <color name="md_theme_inverseOnSurface">#000000</color>
+    <color name="md_theme_inverseSurface">#FFFFFF</color>
+    <color name="md_theme_inversePrimary">#FFB340</color>
+    
     <color name="md_theme_surfaceTint">#F97910</color>
+    <color name="md_theme_outlineVariant">#48484A</color>
+    <color name="md_theme_scrim">#000000</color>
+    
+    <color name="color_fab_active">#F97910</color>
+    <color name="color_ping">#32D74B</color> <!-- iOS Green -->
+    <color name="color_ping_red">#FF453A</color> <!-- iOS Red -->
     <color name="md_theme_scrim">#000000</color>
 </resources>

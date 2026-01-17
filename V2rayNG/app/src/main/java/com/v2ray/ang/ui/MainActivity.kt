@@ -12,18 +12,17 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.tabs.TabLayoutMediator
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.AppConfig.VPN
 import com.v2ray.ang.R
@@ -48,8 +47,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     val mainViewModel: MainViewModel by viewModels()
-    private lateinit var groupPagerAdapter: GroupPagerAdapter
-    private var tabMediator: TabLayoutMediator? = null
+    private lateinit var adapter: MainRecyclerAdapter
 
     private val requestVpnPermission = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == RESULT_OK) {
@@ -60,12 +58,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         if (SettingsChangeManager.consumeRestartService() && mainViewModel.isRunning.value == true) {
             restartV2Ray()
         }
-        if (SettingsChangeManager.consumeSetupGroupTab()) {
-            setupGroupTab()
-        }
+        mainViewModel.reloadServerList()
     }
 
-    // register activity result for requesting permission
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -115,20 +110,20 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
         setupToolbar(binding.toolbar, false, getString(R.string.title_server))
 
-        // setup viewpager and tablayout
-        groupPagerAdapter = GroupPagerAdapter(this, emptyList())
-        binding.viewPager.adapter = groupPagerAdapter
-        binding.viewPager.isUserInputEnabled = true
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = MainRecyclerAdapter(this)
+        binding.recyclerView.adapter = adapter
 
-        // setup navigation drawer
         val toggle = ActionBarDrawerToggle(
-            this, binding.drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+            this, binding.drawerLayout, INVALID_TOOLBAR, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         binding.navView.setNavigationItemSelectedListener(this)
+
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -142,20 +137,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         })
 
         binding.fab.setOnClickListener { handleFabAction() }
-        binding.layoutTest.setOnClickListener { handleLayoutTestClick() }
-        
-        // Custom Menu Button Logic
-        val menuBtn = findViewById<android.widget.ImageView>(R.id.iv_menu)
-        menuBtn?.setOnClickListener { view ->
-            val popup = androidx.appcompat.widget.PopupMenu(this, view)
-            popup.menuInflater.inflate(R.menu.menu_main, popup.menu)
-            popup.setOnMenuItemClickListener { item ->
-                onOptionsItemSelected(item)
-            }
+
+        binding.ivMenu.setOnClickListener { view ->
+            val popup = androidx.appcompat.widget.PopupMenu(this, view, GravityCompat.END, R.attr.popupMenuStyle, 0)
+            menuInflater.inflate(R.menu.menu_main, popup.menu)
+            popup.setOnMenuItemClickListener { item -> onOptionsItemSelected(item) }
             popup.show()
         }
 
-        setupGroupTab()
         setupViewModel()
         mainViewModel.reloadServerList()
 
@@ -166,47 +155,55 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
         }
     }
+    
+    private val INVALID_TOOLBAR: androidx.appcompat.widget.Toolbar? = null
 
     private fun setupViewModel() {
-        mainViewModel.updateTestResultAction.observe(this) { setTestState(it) }
+        mainViewModel.updateTestResultAction.observe(this) { 
+             adapter.notifyDataSetChanged()
+        }
+        
         mainViewModel.isRunning.observe(this) { isRunning ->
             applyRunningState(false, isRunning)
         }
+        
         mainViewModel.startListenBroadcast()
         mainViewModel.initAssets(assets)
         
-        // Polish: Empty State Logic
-        mainViewModel.updateListAction.observe(this) {
-             val isEmpty = mainViewModel.serversCache.isEmpty()
-             val emptyView = findViewById<android.view.View>(R.id.empty_state_view)
-             val viewPager = binding.viewPager
-             
-             if (isEmpty) {
-                 emptyView?.visibility = android.view.View.VISIBLE
-                 viewPager.visibility = android.view.View.GONE
-             } else {
-                 emptyView?.visibility = android.view.View.GONE
-                 viewPager.visibility = android.view.View.VISIBLE
-             }
+        mainViewModel.updateListAction.observe(this) { index ->
+            if (index >= 0) {
+                 adapter.notifyItemChanged(index)
+            } else {
+                 adapter.setData(mainViewModel.serversCache)
+                 updateSubscriptionInfo()
+                 checkEmptyState()
+            }
         }
     }
 
-    private fun setupGroupTab() {
-        val groups = mainViewModel.getSubscriptions(this)
-        groupPagerAdapter.update(groups)
-
-        tabMediator?.detach()
-        tabMediator = TabLayoutMediator(binding.tabGroup, binding.viewPager) { tab, position ->
-            groupPagerAdapter.groups.getOrNull(position)?.let {
-                tab.text = it.remarks
-                tab.tag = it.id
+    private fun checkEmptyState() {
+         if (adapter.getItemCount() == 0) {
+             binding.emptyStateView.visibility = View.VISIBLE
+             binding.recyclerView.visibility = View.GONE
+         } else {
+             binding.emptyStateView.visibility = View.GONE
+             binding.recyclerView.visibility = View.VISIBLE
+         }
+    }
+    
+    private fun updateSubscriptionInfo() {
+        val subId = mainViewModel.subscriptionId
+        if (subId.isNotEmpty()) {
+            val subItem = MmkvManager.decodeSubscription(subId)
+            if (subItem != null && subItem.remarks.isNotEmpty()) {
+                binding.layoutSubscriptionBar.visibility = View.VISIBLE
+                binding.tvSubName.text = subItem.remarks
+            } else {
+                binding.layoutSubscriptionBar.visibility = View.GONE
             }
-        }.also { it.attach() }
-
-        val targetIndex = groups.indexOfFirst { it.id == mainViewModel.subscriptionId }.takeIf { it >= 0 } ?: (groups.size - 1)
-        binding.viewPager.setCurrentItem(targetIndex, false)
-
-        binding.tabGroup.isVisible = groups.size > 1
+        } else {
+            binding.layoutSubscriptionBar.visibility = View.GONE
+        }
     }
 
     private fun handleFabAction() {
@@ -223,15 +220,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
         } else {
             startV2Ray()
-        }
-    }
-
-    private fun handleLayoutTestClick() {
-        if (mainViewModel.isRunning.value == true) {
-            setTestState(getString(R.string.connection_test_testing))
-            mainViewModel.testCurrentServerRealPing()
-        } else {
-            // service not running: keep existing no-op (could show a message if desired)
         }
     }
 
@@ -253,59 +241,25 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
-    private fun setTestState(content: String?) {
-        binding.tvTestState.text = content
-    }
-
     private  fun applyRunningState(isLoading: Boolean, isRunning: Boolean) {
         if (isLoading) {
-            binding.fab.setImageResource(R.drawable.ic_fab_check)
             return
         }
 
         if (isRunning) {
             binding.fab.setImageResource(R.drawable.ic_stop_24dp)
-            binding.fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.color_fab_active))
             binding.fab.contentDescription = getString(R.string.action_stop_service)
-            setTestState(getString(R.string.connection_connected))
-            binding.layoutTest.isFocusable = true
+            binding.tvConnectStatus.text = "Connected"
+            binding.tvConnectStatus.setTextColor(ContextCompat.getColor(this, R.color.colorPing))
         } else {
-            binding.fab.setImageResource(R.drawable.ic_play_24dp)
-            binding.fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.color_fab_inactive))
+            binding.fab.setImageResource(R.drawable.ic_stat_name)
             binding.fab.contentDescription = getString(R.string.tasker_start_service)
-            setTestState(getString(R.string.connection_not_connected))
-            binding.layoutTest.isFocusable = false
+            binding.tvConnectStatus.text = "Tap to Connect"
+            binding.tvConnectStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_secondary))
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-
-        val searchItem = menu.findItem(R.id.search_view)
-        if (searchItem != null) {
-            val searchView = searchItem.actionView as SearchView
-            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean = false
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    mainViewModel.filterConfig(newText.orEmpty())
-                    return false
-                }
-            })
-
-            searchView.setOnCloseListener {
-                mainViewModel.filterConfig("")
-                false
-            }
-        }
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -314,133 +268,76 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             importQRcode()
             true
         }
-
         R.id.import_clipboard -> {
             importClipboard()
             true
         }
-
         R.id.import_local -> {
             importConfigLocal()
             true
         }
-
-        R.id.import_manually_policy_group -> {
-            importManually(EConfigType.POLICYGROUP.value)
-            true
-        }
-
         R.id.import_manually_vmess -> {
             importManually(EConfigType.VMESS.value)
             true
         }
-
         R.id.import_manually_vless -> {
             importManually(EConfigType.VLESS.value)
             true
         }
-
         R.id.import_manually_ss -> {
             importManually(EConfigType.SHADOWSOCKS.value)
             true
         }
-
-        R.id.import_manually_socks -> {
-            importManually(EConfigType.SOCKS.value)
-            true
-        }
-
-        R.id.import_manually_http -> {
-            importManually(EConfigType.HTTP.value)
-            true
-        }
-
         R.id.import_manually_trojan -> {
             importManually(EConfigType.TROJAN.value)
             true
         }
-
-        R.id.import_manually_wireguard -> {
-            importManually(EConfigType.WIREGUARD.value)
+        R.id.sub_update -> {
+            importConfigViaSub()
             true
         }
-
-        R.id.import_manually_hysteria2 -> {
-            importManually(EConfigType.HYSTERIA2.value)
-            true
-        }
-
         R.id.export_all -> {
             exportAll()
             true
         }
-
         R.id.ping_all -> {
             toast(getString(R.string.connection_test_testing_count, mainViewModel.serversCache.count()))
             mainViewModel.testAllTcping()
             true
         }
-
         R.id.real_ping_all -> {
             toast(getString(R.string.connection_test_testing_count, mainViewModel.serversCache.count()))
             mainViewModel.testAllRealPing()
             true
         }
-
         R.id.service_restart -> {
             restartV2Ray()
             true
         }
-
         R.id.del_all_config -> {
             delAllConfig()
             true
         }
-
         R.id.del_duplicate_config -> {
             delDuplicateConfig()
             true
         }
-
-        R.id.del_invalid_config -> {
+         R.id.del_invalid_config -> {
             delInvalidConfig()
             true
         }
-
-        R.id.sort_by_test_results -> {
-            sortByTestResults()
-            true
-        }
-
-        R.id.sub_update -> {
-            importConfigViaSub()
-            true
-        }
-
-
         else -> super.onOptionsItemSelected(item)
     }
 
     private fun importManually(createConfigType: Int) {
-        if (createConfigType == EConfigType.POLICYGROUP.value) {
-            startActivity(
-                Intent()
-                    .putExtra("subscriptionId", mainViewModel.subscriptionId)
-                    .setClass(this, ServerGroupActivity::class.java)
-            )
-        } else {
-            startActivity(
-                Intent()
-                    .putExtra("createConfigType", createConfigType)
-                    .putExtra("subscriptionId", mainViewModel.subscriptionId)
-                    .setClass(this, ServerActivity::class.java)
-            )
-        }
+        startActivity(
+            Intent()
+                .putExtra("createConfigType", createConfigType)
+                .putExtra("subscriptionId", mainViewModel.subscriptionId)
+                .setClass(this, ServerActivity::class.java)
+        )
     }
 
-    /**
-     * import config from qrcode
-     */
     private fun importQRcode(): Boolean {
         val permission = Manifest.permission.CAMERA
         if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
@@ -452,11 +349,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         return true
     }
 
-    /**
-     * import config from clipboard
-     */
-    private fun importClipboard()
-            : Boolean {
+    private fun importClipboard(): Boolean {
         try {
             val clipboard = Utils.getClipboard(this)
             importBatchConfig(clipboard)
@@ -469,20 +362,16 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private fun importBatchConfig(server: String?) {
         showLoading()
-
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val (count, countSub) = AngConfigManager.importBatchConfig(server, mainViewModel.subscriptionId, true)
+                val (count, _) = AngConfigManager.importBatchConfig(server, mainViewModel.subscriptionId, true)
                 delay(500L)
                 withContext(Dispatchers.Main) {
-                    when {
-                        count > 0 -> {
-                            toast(getString(R.string.title_import_config_count, count))
-                            mainViewModel.reloadServerList()
-                        }
-
-                        countSub > 0 -> setupGroupTab()
-                        else -> toastError(R.string.toast_failure)
+                    if (count > 0) {
+                        toast(getString(R.string.title_import_config_count, count))
+                        mainViewModel.reloadServerList()
+                    } else {
+                        toastError(R.string.toast_failure)
                     }
                     hideLoading()
                 }
@@ -491,14 +380,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     toastError(R.string.toast_failure)
                     hideLoading()
                 }
-                Log.e(AppConfig.TAG, "Failed to import batch config", e)
             }
         }
     }
 
-    /**
-     * import config from local config file
-     */
     private fun importConfigLocal(): Boolean {
         try {
             showFileChooser()
@@ -509,13 +394,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         return true
     }
 
-
-    /**
-     * import config from sub
-     */
     private fun importConfigViaSub(): Boolean {
         showLoading()
-
         lifecycleScope.launch(Dispatchers.IO) {
             val count = mainViewModel.updateConfigViaSubAll()
             delay(500L)
@@ -537,10 +417,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         lifecycleScope.launch(Dispatchers.IO) {
             val ret = mainViewModel.exportAllServer()
             launch(Dispatchers.Main) {
-                if (ret > 0)
-                    toast(getString(R.string.title_export_config_count, ret))
-                else
-                    toastError(R.string.toast_failure)
+                if (ret > 0) toast(getString(R.string.title_export_config_count, ret))
+                else toastError(R.string.toast_failure)
                 hideLoading()
             }
         }
@@ -559,9 +437,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     }
                 }
             }
-            .setNegativeButton(android.R.string.cancel) { _, _ ->
-                //do noting
-            }
+            .setNegativeButton(android.R.string.cancel) { _, _ -> }
             .show()
     }
 
@@ -578,12 +454,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     }
                 }
             }
-            .setNegativeButton(android.R.string.cancel) { _, _ ->
-                //do noting
-            }
+            .setNegativeButton(android.R.string.cancel) { _, _ -> }
             .show()
     }
-
+    
     private fun delInvalidConfig() {
         AlertDialog.Builder(this).setMessage(R.string.del_invalid_config_comfirm)
             .setPositiveButton(android.R.string.ok) { _, _ ->
@@ -597,26 +471,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     }
                 }
             }
-            .setNegativeButton(android.R.string.cancel) { _, _ ->
-                //do noting
-            }
+            .setNegativeButton(android.R.string.cancel) { _, _ -> }
             .show()
     }
-
-    private fun sortByTestResults() {
-        showLoading()
-        lifecycleScope.launch(Dispatchers.IO) {
-            mainViewModel.sortByTestResults()
-            launch(Dispatchers.Main) {
-                mainViewModel.reloadServerList()
-                hideLoading()
-            }
-        }
-    }
-
-    /**
-     * show file chooser
-     */
+    
     private fun showFileChooser() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "*/*"
@@ -636,16 +494,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
-    /**
-     * read content from uri
-     */
     private fun readContentFromUri(uri: Uri) {
-        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+         val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             Manifest.permission.READ_MEDIA_IMAGES
         } else {
             Manifest.permission.READ_EXTERNAL_STORAGE
         }
-
+        
         if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
             try {
                 contentResolver.openInputStream(uri).use { input ->
@@ -655,7 +510,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 Log.e(AppConfig.TAG, "Failed to read content from URI", e)
             }
         } else {
-            requestPermissionLauncher.launch(permission)
+             requestPermissionLauncher.launch(permission)
         }
     }
 
@@ -667,9 +522,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         return super.onKeyDown(keyCode, event)
     }
 
-
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.sub_setting -> requestActivityLauncher.launch(Intent(this, SubSettingActivity::class.java))
             R.id.per_app_proxy_settings -> requestActivityLauncher.launch(Intent(this, PerAppProxyActivity::class.java))
@@ -682,13 +535,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.id.backup_restore -> requestActivityLauncher.launch(Intent(this, BackupActivity::class.java))
             R.id.about -> startActivity(Intent(this, AboutActivity::class.java))
         }
-
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
-    }
-
-    override fun onDestroy() {
-        tabMediator?.detach()
-        super.onDestroy()
     }
 }
