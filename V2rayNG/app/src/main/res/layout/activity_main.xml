@@ -14,256 +14,197 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- Toolbar required for setSupportActionBar in BaseActivity/MainActivity compat -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:visibility="gone"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <!-- Hidden Standard Toolbar for Compatibility -->
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:visibility="gone" />
-
-            <!-- Custom Luxury Header -->
-            <LinearLayout
+            <!-- Custom Header -->
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp"
-                android:paddingTop="48dp" 
-                android:paddingBottom="24dp"
-                android:background="@android:color/transparent">
+                android:paddingBottom="24dp">
 
                 <TextView
+                    android:id="@+id/tv_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dashboard"
-                    android:textAllCaps="true"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/app_name"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="24sp" />
+
+                <!-- Config/Menu Button -->
+                <ImageView
+                    android:id="@+id/iv_menu"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/menu_settings"
+                    android:src="@drawable/ic_settings_24dp"
+                    app:tint="@color/colorWhite" />
+
+            </RelativeLayout>
+
+            <!-- Connect Button Area -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:gravity="center">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_centerInParent="true"
+                    android:backgroundTint="#2C2C2E"
+                    android:clickable="true"
+                    android:contentDescription="@string/description_connect"
+                    android:focusable="true"
+                    android:foregroundGravity="center"
+                    app:borderWidth="2dp"
+                    app:elevation="8dp"
+                    app:fabCustomSize="120dp"
+                    app:maxImageSize="48dp"
+                    app:rippleColor="@color/md_theme_primary"
+                    app:srcCompat="@drawable/ic_stat_name"
+                    app:tint="@color/md_theme_primary" />
+
+                <TextView
+                    android:id="@+id/tv_connect_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/fab"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="16dp"
+                    android:text="Tap to Connect"
                     android:textColor="@color/md_theme_secondary"
-                    android:textSize="12sp"
-                    android:letterSpacing="0.2"
-                    android:textStyle="bold" />
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+
+            <!-- Subscription / Data Limit Bar (Conditional) -->
+            <LinearLayout
+                android:id="@+id/layout_subscription_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_subscription_card"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="4dp">
+                    android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/tv_sub_name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="V2Ray Elite"
-                        android:textColor="@color/md_theme_onSurface"
-                        android:textSize="32sp"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-black" />
+                        android:text="Premium Subscription"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
-
-
-                    <!-- Menu Button (Restored Functionality) -->
                     <ImageView
-                        android:id="@+id/iv_menu"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_settings_24dp"
-                        app:tint="@color/md_theme_onSurface"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:clickable="true"
-                        android:focusable="true" />
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_diamond"
+                        app:tint="@color/md_theme_primary"
+                        tools:ignore="ContentDescription" />
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <!-- Progress Bar -->
-            <com.google.android.material.progressindicator.LinearProgressIndicator
-                android:id="@+id/progress_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:indeterminate="true"
-                android:visibility="invisible"
-                app:indicatorColor="@color/md_theme_primary"
-                app:trackColor="@android:color/transparent" />
-
-            <!-- Modern Styled TabLayout -->
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tab_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <!-- Header -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="24dp">
-
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:text="@string/app_name"
-                android:textColor="@color/colorWhite"
-                android:textSize="24sp" />
-
-            <!-- Using iv_filter for Menu/Settings as requested in earlier steps, or sticking to menu -->
-            <!-- Config/Menu Button -->
-            <ImageView
-                android:id="@+id/iv_menu"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/menu_settings"
-                android:src="@drawable/ic_settings_24dp"
-                app:tint="@color/colorWhite" />
-
-        </RelativeLayout>
-
-        <!-- Connect Button Area -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:gravity="center">
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_centerInParent="true"
-                android:backgroundTint="#2C2C2E"
-                android:clickable="true"
-                android:contentDescription="@string/description_connect"
-                android:focusable="true"
-                android:foregroundGravity="center"
-                app:borderWidth="2dp"
-                app:elevation="8dp"
-                app:fabCustomSize="120dp"
-                app:maxImageSize="48dp"
-                app:rippleColor="@color/md_theme_primary"
-                app:srcCompat="@drawable/ic_stat_name"
-                app:tint="@color/md_theme_primary" />
-
-            <TextView
-                android:id="@+id/tv_connect_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/fab"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp"
-                android:text="Tap to Connect"
-                android:textColor="@color/md_theme_secondary"
-                android:textSize="14sp" />
-
-        </RelativeLayout>
-
-        <!-- Subscription / Data Limit Bar (Conditional) -->
-        <LinearLayout
-            android:id="@+id/layout_subscription_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/bg_subscription_card"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                <ProgressBar
+                    android:id="@+id/pb_data_usage"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="8dp"
+                    android:progress="25"
+                    android:progressDrawable="@drawable/bg_progressbar_custom" />
 
                 <TextView
-                    android:id="@+id/tv_sub_name"
-                    android:layout_width="0dp"
+                    android:id="@+id/tv_data_usage"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Premium Subscription"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:text="12.5 GB / 50.0 GB"
+                    android:textColor="@color/md_theme_secondary"
+                    android:textSize="12sp" />
 
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_diamond"
-                    app:tint="@color/md_theme_primary" 
-                    tools:ignore="ContentDescription" />
             </LinearLayout>
 
-            <ProgressBar
-                android:id="@+id/pb_data_usage"
-                style="?android:attr/progressBarStyleHorizontal"
+            <!-- Empty State View -->
+            <LinearLayout
+                android:id="@+id/empty_state_view"
                 android:layout_width="match_parent"
-                android:layout_height="4dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="8dp"
-                android:progress="25"
-                android:progressDrawable="@drawable/bg_progressbar_custom" />
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
 
-            <TextView
-                android:id="@+id/tv_data_usage"
+                <ImageView
+                    android:id="@+id/iv_empty_state"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginBottom="16dp"
+                    android:src="@drawable/ic_empty_state_plus"
+                    app:tint="@color/md_theme_primary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No Servers Found"
+                    android:textColor="@color/md_theme_secondary"
+                    android:textSize="16sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tap '+' to add configuration"
+                    android:textColor="@color/md_theme_secondary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Server List -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="12.5 GB / 50.0 GB"
-                android:textColor="@color/md_theme_secondary"
-                android:textSize="12sp" />
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="80dp" />
 
         </LinearLayout>
-        
-        <!-- Empty State View -->
-        <LinearLayout
-            android:id="@+id/empty_state_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone"
-            tools:visibility="visible">
 
-            <ImageView
-                android:id="@+id/iv_empty_state"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_marginBottom="16dp"
-                android:src="@drawable/ic_empty_state_plus"
-                app:tint="@color/md_theme_primary" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="No Servers Found"
-                android:textColor="@color/md_theme_secondary"
-                android:textSize="16sp" />
-             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tap '+' to add configuration"
-                android:textColor="@color/md_theme_secondary"
-                android:textSize="12sp" />
-        </LinearLayout>
+    <!-- Navigation Drawer -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        android:background="@color/md_theme_surface"
+        app:itemTextColor="@color/md_theme_onSurface"
+        app:itemIconTint="@color/md_theme_primary"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/menu_main" />
 
-        <!-- Server List -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingBottom="80dp" />
-
-    </LinearLayout>
-
-    <!-- Keeping Footer/Ad logic hidden or removed as per request for clean UI, but original fab logic might require valid layout anchors. -->
-    
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.drawerlayout.widget.DrawerLayout>
