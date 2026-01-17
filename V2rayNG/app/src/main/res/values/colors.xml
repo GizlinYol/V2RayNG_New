@@ -49,8 +49,6 @@
     <color name="md_theme_outlineVariant">#48484A</color>
     <color name="md_theme_scrim">#000000</color>
     
-    <color name="color_fab_active">#F97910</color>
     <color name="color_ping">#32D74B</color> <!-- iOS Green -->
     <color name="color_ping_red">#FF453A</color> <!-- iOS Red -->
-    <color name="md_theme_scrim">#000000</color>
 </resources>
